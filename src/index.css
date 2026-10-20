@@ -1,0 +1,7 @@
+.brand-row {
+	cursor: pointer;
+}
+
+.brand-row:hover {
+	background-color: var(--bs-tertiary-bg);
+}
