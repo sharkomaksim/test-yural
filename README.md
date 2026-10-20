@@ -12,7 +12,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Сборка: `npm run build`, проверка линтером и форматтером: `npm run lint`.
+Сборка: `npm run build`, линтер: `npm run lint`. Форматирование — `npx vp fmt`, линтер и форматтер вместе — `npx vp check`.
 
 ## Настройка
 
@@ -31,14 +31,19 @@ npm run dev
 
 React 19 (без TypeScript), Redux Toolkit + RTK Query, Bootstrap 5 (только CSS), Vite+ (`vp dev/build/lint`).
 Форматирование (Oxfmt) настроено в `fmt`-блоке `vite.config.js`.
+Импорты внутри `src` — через алиас `@` (`resolve.alias` в `vite.config.js`, `jsconfig.json` для IDE).
 
 ## Как устроено
 
 - `src/features/parts/partsApi.js` — RTK Query: `getBrands(number)` и `getAnalogues({number, brand})`.
 - `src/features/parts/normalize.js` — приведение ответов API к состояниям `ok | empty | error`.
-- `src/features/parts/PartsPage.jsx` — сценарий из двух этапов, загрузка и ошибки.
-- `src/components/BrandTable.jsx` — таблица производителей (этап 1), строка кликабельна.
-- `src/components/PartCard.jsx` и `AnalogTable` — карточка выбранной детали и аналоги с раскрытием складов.
+- `src/features/parts/PartsPage.jsx` — композиция секций и сообщение о настройке ключа.
+- `src/features/parts/BrandsSection.jsx` — ввод артикула, debounce, этап 1: загрузка, ошибки, пустой ответ и таблица производителей.
+- `src/features/parts/AnaloguesSection.jsx` — этап 2: карточка детали, её предложения и аналоги.
+- `src/components/BrandTable.jsx` / `BrandRow.jsx` — таблица производителей, строка кликабельна.
+- `src/components/PartCard.jsx`, `WarehouseTable.jsx` — карточка детали и предложения по складам.
+- `src/components/AnalogueTable.jsx` / `AnalogueRow.jsx` — аналоги с раскрытием складов.
+- `src/constants/errors.js` — `describeError(source)` для сетевых ошибок и `error` из ответа сервиса.
 
 ### Поток данных
 
@@ -47,8 +52,8 @@ React 19 (без TypeScript), Redux Toolkit + RTK Query, Bootstrap 5 (тольк
 2. Этап 1: `goods[]` → таблица «производитель / название / артикул / цена от / остаток».
    Цена — минимальная среди `warehouses[].price` (поле `goods.price` устарело по документации).
 3. Этап 2: запрос с `number` и `brand` из выбранной строки, `analogues=on`, `info=on`.
-   Карточка детали + таблица аналогов; клик по «Склады» раскрывает предложения
-   (склад, цена, остаток, дата отгрузки, невозвратность).
+   Карточка детали, под ней — предложения по складам самой детали, затем таблица аналогов;
+   клик по «Склады» раскрывает предложения аналога (склад, цена, остаток, дата отгрузки, невозвратность).
 
 Смена артикула сбрасывает выбранного производителя и результаты второго этапа.
 
@@ -59,7 +64,7 @@ React 19 (без TypeScript), Redux Toolkit + RTK Query, Bootstrap 5 (тольк
 | Сеть недоступна                | «Не удалось связаться с сервисом…» + кнопка «Повторить»                                            |
 | HTTP-ошибка                    | текст из тела ответа (тело `text/plain`, но содержит JSON) либо `HTTP <код>`                       |
 | `{"error":"..."}` при HTTP 200 | ответ трактуется как ошибка, а не как успех                                                        |
-| Известные ошибки API           | человеческие тексты: ключ, лимит запросов, пустой номер                                            |
+| Известные ошибки API           | человеческие тексты: ключ, лимит запросов, пустой артикул                                          |
 | Неизвестная ошибка API         | «Сервис вернул ошибку: <текст>»                                                                    |
 | Деталь не найдена              | `goods[0]` — структурно пустой элемент (пустые `brand`/`number`), показывается «ничего не найдено» |
 | Нет остатков                   | позиции показываются, цена «—», остаток 0                                                          |
