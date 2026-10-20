@@ -26,13 +26,13 @@ const partsSlice = createSlice({
 			state.query = action.payload;
 			state.selectedPart = null;
 		},
-		selectPart(state, action) {
+		choosePart(state, action) {
 			state.selectedPart = action.payload;
 		}
 	}
 });
 
-export const { setInput, setQuery, selectPart } = partsSlice.actions;
+export const { setInput, setQuery, choosePart } = partsSlice.actions;
 
 export const selectInput = state => state.parts.input;
 

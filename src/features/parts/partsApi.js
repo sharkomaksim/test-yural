@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { normalizeAnalogues, normalizeGoodsList, parseBody } from './normalize.js';
+import { normalizeAnalogues, normalizeGoodsList } from '@/features/parts/normalize.js';
+import { parseBody } from '@/lib/parse.js';
 
 export const API_URL = import.meta.env.VITE_FAVORIT_API_URL || 'http://api.favorit-parts.ru/hs/hsprice/';
 

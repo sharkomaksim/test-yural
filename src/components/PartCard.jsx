@@ -1,4 +1,4 @@
-import { formatCount, formatPrice, getMinPrice } from '../lib/format.js';
+import { formatCount, formatPrice, getMinPrice } from '@/lib/format.js';
 
 export default function PartCard({ part }) {
 	const minPrice = getMinPrice(part);

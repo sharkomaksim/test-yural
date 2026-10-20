@@ -1,21 +1,63 @@
-import { parseBody } from '../features/parts/normalize.js';
+import { parseBody } from '@/lib/parse.js';
 
 const KNOWN_API_ERRORS = {
 	'Empty key!': 'Не указан ключ покупателя. Проверьте переменную VITE_FAVORIT_KEY в файле .env.',
 	'Invalid key client!': 'Неверный ключ покупателя: сервис не нашёл такого клиента.',
-	'Empty number goods!': 'Не указан номер детали.',
+	'Empty number goods!': 'Не указан артикул.',
 	'Request quota exceeded!': 'Превышен лимит запросов к сервису. Попробуйте повторить позже.'
 };
+
+const GENERIC_ERROR = 'Не удалось получить данные от сервиса.';
+
+export const UNEXPECTED_RESPONSE = 'Сервис вернул ответ в неизвестном формате.';
+
+/**
+ * Единая точка перевода ошибки в текст. Принимает и ошибку RTK Query (сеть, HTTP, парсинг),
+ * и строку из `error` в ответе сервиса.
+ */
+export function describeError(source) {
+	if (source == null || source === '') {
+		return GENERIC_ERROR;
+	}
+
+	if (typeof source === 'string') {
+		return describeApiError(source);
+	}
+
+	if (source.status === 'FETCH_ERROR') {
+		return 'Не удалось связаться с сервисом. Проверьте подключение к сети. Если страница открыта по HTTPS, браузер блокирует запрос к HTTP-сервису.';
+	}
+
+	if (source.status === 'PARSING_ERROR') {
+		return UNEXPECTED_RESPONSE;
+	}
+
+	const body = parseBody(source.data);
+
+	if (body && typeof body === 'object' && body.error) {
+		return describeApiError(body.error);
+	}
+
+	if (typeof source.status === 'number') {
+		return `Сервис недоступен (HTTP ${source.status}). Попробуйте повторить позже.`;
+	}
+
+	return GENERIC_ERROR;
+}
 
 /**
  * Сервис может вернуть несколько ошибок одной строкой, поэтому ищем известный текст
  * не только полным совпадением, но и вхождением.
  */
-export function mapApiError(message) {
+function describeApiError(message) {
 	const text = String(message ?? '').trim();
 
 	if (!text) {
 		return 'Сервис вернул ошибку без описания.';
+	}
+
+	if (text === UNEXPECTED_RESPONSE) {
+		return text;
 	}
 
 	if (KNOWN_API_ERRORS[text]) {
@@ -29,34 +71,4 @@ export function mapApiError(message) {
 	}
 
 	return `Сервис вернул ошибку: ${text}`;
-}
-
-/**
- * Превращает ошибку RTK Query (сеть, HTTP, сбой парсинга) в понятный текст.
- * Тело ошибочного ответа приходит как text/plain, но содержит JSON — парсим его сами.
- */
-export function describeQueryError(error) {
-	if (!error) {
-		return 'Не удалось получить данные от сервиса.';
-	}
-
-	if (error.status === 'FETCH_ERROR') {
-		return 'Не удалось связаться с сервисом. Проверьте подключение к сети и повторите попытку.';
-	}
-
-	if (error.status === 'PARSING_ERROR') {
-		return 'Сервис вернул ответ в неизвестном формате.';
-	}
-
-	const body = parseBody(error.data);
-
-	if (body && typeof body === 'object' && body.error) {
-		return mapApiError(body.error);
-	}
-
-	if (typeof error.status === 'number') {
-		return `Сервис недоступен (HTTP ${error.status}). Попробуйте повторить позже.`;
-	}
-
-	return 'Не удалось получить данные от сервиса.';
 }

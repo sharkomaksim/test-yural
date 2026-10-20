@@ -1,18 +1,10 @@
+import { UNEXPECTED_RESPONSE } from '@/constants/errors.js';
+
+/**
+ * Нулевой UUID — так сервис помечает пустую структуру ответа (подтверждено на живом API).
+ * Проверки brand/number обычно достаточно; UUID страхует от частично заполненной структуры.
+ */
 export const EMPTY_GOODS_ID = '00000000-0000-0000-0000-000000000000';
-
-const UNEXPECTED_RESPONSE = 'Сервис вернул ответ в неизвестном формате.';
-
-export function parseBody(data) {
-	if (typeof data !== 'string') {
-		return data;
-	}
-
-	try {
-		return JSON.parse(data);
-	} catch {
-		return data;
-	}
-}
 
 export function isEmptyGoods(item) {
 	return !item || !item.brand || !item.number || item.goodsID === EMPTY_GOODS_ID;

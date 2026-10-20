@@ -1,4 +1,4 @@
-import { formatCount, formatPrice, getMinPrice } from '../lib/format.js';
+import BrandRow from '@/components/BrandRow.jsx';
 
 export default function BrandTable({ goods, selectedKey, onSelect }) {
 	return (
@@ -23,32 +23,14 @@ export default function BrandTable({ goods, selectedKey, onSelect }) {
 				<tbody>
 					{goods.map(item => {
 						const key = `${item.brand}|${item.number}`;
-						const isSelected = key === selectedKey;
 
 						return (
-							<tr
+							<BrandRow
 								key={item.goodsID || key}
-								className={isSelected ? 'table-active brand-row' : 'brand-row'}
-								onClick={() => onSelect(item)}
-							>
-								<td className='fw-semibold'>{item.brand}</td>
-								<td>{item.name}</td>
-								<td className='text-nowrap'>{item.number}</td>
-								<td className='text-end text-nowrap'>{formatPrice(getMinPrice(item))}</td>
-								<td className='text-end text-nowrap'>{formatCount(item.count)}</td>
-								<td className='text-end'>
-									<button
-										type='button'
-										className={`btn btn-sm ${isSelected ? 'btn-primary' : 'btn-outline-primary'}`}
-										onClick={event => {
-											event.stopPropagation();
-											onSelect(item);
-										}}
-									>
-										Показать
-									</button>
-								</td>
-							</tr>
+								item={item}
+								isSelected={key === selectedKey}
+								onSelect={onSelect}
+							/>
 						);
 					})}
 				</tbody>

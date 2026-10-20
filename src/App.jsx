@@ -1,4 +1,4 @@
-import PartsPage from './features/parts/PartsPage.jsx';
+import PartsPage from '@/features/parts/PartsPage.jsx';
 
 export default function App() {
 	return (

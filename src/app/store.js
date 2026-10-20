@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { partsApi } from '../features/parts/partsApi.js';
-import partsReducer from '../features/parts/partsSlice.js';
+import { partsApi } from '@/features/parts/partsApi.js';
+import partsReducer from '@/features/parts/partsSlice.js';
 
 export const store = configureStore({
 	reducer: {

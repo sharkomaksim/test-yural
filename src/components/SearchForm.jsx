@@ -8,7 +8,7 @@ export default function SearchForm({ value, onChange, onSubmit }) {
 			}}
 		>
 			<label className='form-label' htmlFor='part-number'>
-				Артикул детали
+				Артикул
 			</label>
 			<div className='input-group'>
 				<input
