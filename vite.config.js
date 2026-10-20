@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url';
+
 import react from '@vitejs/plugin-react';
 import { defineConfig, lazyPlugins } from 'vite-plus';
 
@@ -24,6 +26,11 @@ export default defineConfig({
 					allowConstantExport: true
 				}
 			]
+		}
+	},
+	resolve: {
+		alias: {
+			'@': fileURLToPath(new URL('./src', import.meta.url))
 		}
 	},
 	plugins: lazyPlugins(() => [react()])
