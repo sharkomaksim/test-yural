@@ -17,8 +17,12 @@ export default function WarehouseTable({ warehouses }) {
 						<th scope='col' className='text-end'>
 							Остаток
 						</th>
-						<th scope='col'>Отгрузка</th>
-						<th scope='col'>Возврат</th>
+						<th scope='col' className='text-end'>
+							Отгрузка
+						</th>
+						<th scope='col' className='text-end'>
+							Возврат
+						</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -27,8 +31,8 @@ export default function WarehouseTable({ warehouses }) {
 							<td>{warehouse.code || warehouse.id}</td>
 							<td className='text-end text-nowrap'>{formatPrice(warehouse.price)}</td>
 							<td className='text-end text-nowrap'>{formatCount(warehouse.stock)}</td>
-							<td className='text-nowrap'>{formatShipmentDate(warehouse.shipmentDate)}</td>
-							<td>
+							<td className='text-end text-nowrap'>{formatShipmentDate(warehouse.shipmentDate)}</td>
+							<td className='text-end'>
 								{warehouse.notRefund ? (
 									<span className='badge text-bg-warning'>без возврата</span>
 								) : (
