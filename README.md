@@ -44,6 +44,8 @@ React 19 (без TypeScript), Redux Toolkit + RTK Query, Bootstrap 5 (тольк
 - `src/components/PartCard.jsx`, `WarehouseTable.jsx` — карточка детали и предложения по складам.
 - `src/components/AnalogueTable.jsx` / `AnalogueRow.jsx` — аналоги с раскрытием складов.
 - `src/constants/errors.js` — `describeError(source)` для сетевых ошибок и `error` из ответа сервиса.
+- `src/app/themeSlice.js`, `src/components/ThemeToggle.jsx` — тема: `data-bs-theme` на `<html>`,
+  выбор в `localStorage`, по умолчанию — системная.
 
 ### Поток данных
 

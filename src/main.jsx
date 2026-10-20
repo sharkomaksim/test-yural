@@ -7,6 +7,8 @@ import { Provider } from 'react-redux';
 import App from '@/App.jsx';
 import { store } from '@/app/store.js';
 
+document.documentElement.dataset.bsTheme = store.getState().theme.mode;
+
 createRoot(document.getElementById('root')).render(
 	<StrictMode>
 		<Provider store={store}>
